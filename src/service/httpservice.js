@@ -58,4 +58,20 @@ export const API = {
       console.error("Error fetching options:", error);
     }
   },
+  getPrice: async (obj) => {
+    let property = "USD";
+    for (let key in obj) {
+      if (obj.hasOwnProperty(key)) {
+        if (key === property) {
+          return obj[key];
+        } else if (typeof obj[key] === "object" && obj[key] !== null) {
+          const nestedResult = await API.getPrice(obj[key]);
+          if (nestedResult !== undefined) {
+            return nestedResult;
+          }
+        }
+      }
+    }
+    return undefined;
+  },
 };

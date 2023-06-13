@@ -1,11 +1,16 @@
 import React, { useState, useEffect } from "react";
 import { API } from "../service/httpservice";
 
-export const FormDesign3 = () => {
+export const FormDesign3 = ({
+  setinstanceFamilyValue,
+  instanceFamilyValue,
+  setinstanceTypeValue,
+  instanceTypeValue,
+  setVirtualApplicationPrice,
+}) => {
   const [instanceFamilyOptions, setinstanceFamilyOptions] = useState([]);
-  const [instanceFamilyValue, setinstanceFamilyValue] = useState([]);
+
   const [instanceTypeOptions, setinstanceTypeOptions] = useState([]);
-  const [instanceTypeValue, setinstanceTypeValue] = useState([]);
   const [sizeOPtions, setSizeOptions] = useState([]);
 
   async function getData(resource, options) {
@@ -26,7 +31,10 @@ export const FormDesign3 = () => {
     }, {});
     const mergedObject = { ...value, ...keyValuePairs };
     const res = await API.getSku(resource, mergedObject);
-    console.log(res);
+    let price = await API.getPrice(res);
+    price = parseFloat(price);
+    price = parseFloat(price.toFixed(3));
+    setVirtualApplicationPrice(price);
   }
 
   useEffect(() => {
@@ -34,94 +42,96 @@ export const FormDesign3 = () => {
   }, []);
 
   return (
-    <div className="container">
+    <div className="container main">
       <div className="mainHeading">Virtual Application - Non Persistent</div>
-      <div className="form-group row flex">
-        <div className="col-md-3">
-          <label className="subHeading" for="license">
-            Type
-          </label>
+      <div className="select-section">
+        <div className="form-group row flex">
+          <div className="col-md-3 text">
+            <label className="subHeading" for="license">
+              Type
+            </label>
+          </div>
+          <div className="col-md-9 options">
+            <select
+              className="form-control"
+              id="license"
+              name="license"
+              onChange={(e) => {
+                getNextData(
+                  "appStreamRoutes",
+                  "instanceType",
+                  { instanceFamily: e.target.value },
+                  setinstanceTypeOptions
+                );
+                setinstanceFamilyValue(e.target.value);
+              }}
+            >
+              <option>Select Type</option>
+              {instanceFamilyOptions.map((op, key) => {
+                return <option key={key}>{op}</option>;
+              })}
+            </select>
+          </div>
         </div>
-        <div className="col-md-9 options">
-          <select
-            className="form-control"
-            id="license"
-            name="license"
-            onChange={(e) => {
-              getNextData(
-                "appStreamRoutes",
-                "instanceType",
-                { instanceFamily: e.target.value },
-                setinstanceTypeOptions
-              );
-              setinstanceFamilyValue(e.target.value);
-            }}
-          >
-            <option>Select Type</option>
-            {instanceFamilyOptions.map((op, key) => {
-              return <option key={key}>{op}</option>;
-            })}
-          </select>
+        <div className="form-group row">
+          <div className="col-md-3 text">
+            <label className="subHeading" for="bundle">
+              Instance
+            </label>
+          </div>
+          <div className="col-md-9 options">
+            <select
+              className="form-control"
+              id="bundle"
+              name="bundle"
+              onChange={(e) => {
+                getNextData(
+                  "appStreamRoutes",
+                  ["vcpu", "memoryGib"],
+                  {
+                    instanceFamily: instanceFamilyValue,
+                    instanceType: e.target.value,
+                  },
+                  setSizeOptions
+                );
+                setinstanceTypeValue(e.target.value);
+              }}
+            >
+              <option>Select Instance</option>
+              {instanceTypeOptions.map((op, key) => {
+                return <option key={key}>{op}</option>;
+              })}
+            </select>
+          </div>
         </div>
-      </div>
-      <div className="form-group row flex-nowrap">
-        <div className="col-md-3">
-          <label className="subHeading" for="bundle">
-            Instance
-          </label>
-        </div>
-        <div className="col-md-9 options">
-          <select
-            className="form-control"
-            id="bundle"
-            name="bundle"
-            onChange={(e) => {
-              getNextData(
-                "appStreamRoutes",
-                ["vcpu", "memoryGib"],
-                {
-                  instanceFamily: instanceFamilyValue,
-                  instanceType: e.target.value,
-                },
-                setSizeOptions
-              );
-              setinstanceTypeValue(e.target.value);
-            }}
-          >
-            <option>Select Instance</option>
-            {instanceTypeOptions.map((op, key) => {
-              return <option key={key}>{op}</option>;
-            })}
-          </select>
-        </div>
-      </div>
-      <div className="form-group row flex-nowrap">
-        <div className="col-md-3">
-          <label className="subHeading" for="configuration">
-            Size
-          </label>
-        </div>
-        <div className="col-md-9 options">
-          <select
-            className="form-control"
-            id="configuration"
-            name="configuration"
-            onChange={(e) => {
-              getPrice(
-                "appStreamRoutes",
-                {
-                  instanceFamily: instanceFamilyValue,
-                  instanceType: instanceTypeValue,
-                },
-                e.target.value
-              );
-            }}
-          >
-            <option>Select Size</option>
-            {sizeOPtions.map((op, key) => {
-              return <option key={key}>{op}</option>;
-            })}
-          </select>
+        <div className="form-group row">
+          <div className="col-md-3 text">
+            <label className="subHeading" for="configuration">
+              Size
+            </label>
+          </div>
+          <div className="col-md-9 options">
+            <select
+              className="form-control"
+              id="configuration"
+              name="configuration"
+              onChange={(e) => {
+                getPrice(
+                  "appStreamRoutes",
+                  {
+                    instanceFamily: instanceFamilyValue,
+                    instanceType: instanceTypeValue,
+                  },
+                  e.target.value
+                );
+              }}
+            >
+              <option>Select Size</option>
+              {sizeOPtions.map((op, key) => {
+                return <option key={key}>{op}</option>;
+              })}
+            </select>
+          </div>
         </div>
       </div>
     </div>
