@@ -34,61 +34,63 @@ export const FormDesign4 = ({
   }, []);
 
   return (
-    <div className="container main">
-      <div className="mainHeading">Learing Lab Instance</div>
-      <div className="select-section">
-        <div className="form-group row flex">
-          <div className="col-md-3 text">
-            <label className="subHeading" for="license">
-              Type
-            </label>
+    <div className="col-md-6">
+      <div className="section-wrapper">
+        <div className="mainHeading">Learing Lab Instance</div>
+        <div className="select-section">
+          <div className="form-group row flex">
+            <div className="col-md-3 text">
+              <label className="subHeading" for="license">
+                Type
+              </label>
+            </div>
+            <div className="col-md-9 options">
+              <select
+                className="form-control"
+                id="license"
+                name="license"
+                onChange={(e) => {
+                  getNextData(
+                    "ec2Routes",
+                    "instanceType",
+                    { operatingSystem: e.target.value },
+                    setinstanceTypeOptions
+                  );
+                  setoperatingSystemValue(e.target.value);
+                }}
+              >
+                <option>Select Type</option>
+                {operatingSystemOptions.map((op, key) => {
+                  return <option key={key}>{op}</option>;
+                })}
+              </select>
+            </div>
           </div>
-          <div className="col-md-9 options">
-            <select
-              className="form-control"
-              id="license"
-              name="license"
-              onChange={(e) => {
-                getNextData(
-                  "ec2Routes",
-                  "instanceType",
-                  { operatingSystem: e.target.value },
-                  setinstanceTypeOptions
-                );
-                setoperatingSystemValue(e.target.value);
-              }}
-            >
-              <option>Select Type</option>
-              {operatingSystemOptions.map((op, key) => {
-                return <option key={key}>{op}</option>;
-              })}
-            </select>
-          </div>
-        </div>
-        <div className="form-group row">
-          <div className="col-md-3 text">
-            <label className="subHeading" for="bundle">
-              Instance
-            </label>
-          </div>
-          <div className="col-md-9 options">
-            <select
-              className="form-control"
-              id="bundle"
-              name="bundle"
-              onChange={(e) => {
-                getPrice("ec2Routes", {
-                  operatingSystem: operatingSystemValue,
-                  instanceType: e.target.value,
-                });
-                setInstanceLabType(e.target.value);
-              }}
-            >
-              <option>Select Instance</option>
-              {instanceTypeOptions.map((op, key) => {
-                return <option key={key}>{op}</option>;
-              })}
-            </select>
+          <div className="form-group row">
+            <div className="col-md-3 text">
+              <label className="subHeading" for="bundle">
+                Instance
+              </label>
+            </div>
+            <div className="col-md-9 options">
+              <select
+                className="form-control"
+                id="bundle"
+                name="bundle"
+                onChange={(e) => {
+                  getPrice("ec2Routes", {
+                    operatingSystem: operatingSystemValue,
+                    instanceType: e.target.value,
+                  });
+                  setInstanceLabType(e.target.value);
+                }}
+              >
+                <option>Select Instance</option>
+                {instanceTypeOptions.map((op, key) => {
+                  return <option key={key}>{op}</option>;
+                })}
+              </select>
+            </div>
           </div>
         </div>
       </div>

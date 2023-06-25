@@ -42,95 +42,97 @@ export const FormDesign3 = ({
   }, []);
 
   return (
-    <div className="container main">
-      <div className="mainHeading">Virtual Application - Non Persistent</div>
-      <div className="select-section">
-        <div className="form-group row flex">
-          <div className="col-md-3 text">
-            <label className="subHeading" for="license">
-              Type
-            </label>
+    <div className="col-md-6">
+      <div className="section-wrapper">
+        <div className="mainHeading">Virtual Application - Non Persistent</div>
+        <div className="select-section">
+          <div className="form-group row flex">
+            <div className="col-md-3 text">
+              <label className="subHeading" for="license">
+                Type
+              </label>
+            </div>
+            <div className="col-md-9 options">
+              <select
+                className="form-control"
+                id="license"
+                name="license"
+                onChange={(e) => {
+                  getNextData(
+                    "appStreamRoutes",
+                    "instanceType",
+                    { instanceFamily: e.target.value },
+                    setinstanceTypeOptions
+                  );
+                  setinstanceFamilyValue(e.target.value);
+                }}
+              >
+                <option>Select Type</option>
+                {instanceFamilyOptions.map((op, key) => {
+                  return <option key={key}>{op}</option>;
+                })}
+              </select>
+            </div>
           </div>
-          <div className="col-md-9 options">
-            <select
-              className="form-control"
-              id="license"
-              name="license"
-              onChange={(e) => {
-                getNextData(
-                  "appStreamRoutes",
-                  "instanceType",
-                  { instanceFamily: e.target.value },
-                  setinstanceTypeOptions
-                );
-                setinstanceFamilyValue(e.target.value);
-              }}
-            >
-              <option>Select Type</option>
-              {instanceFamilyOptions.map((op, key) => {
-                return <option key={key}>{op}</option>;
-              })}
-            </select>
+          <div className="form-group row">
+            <div className="col-md-3 text">
+              <label className="subHeading" for="bundle">
+                Instance
+              </label>
+            </div>
+            <div className="col-md-9 options">
+              <select
+                className="form-control"
+                id="bundle"
+                name="bundle"
+                onChange={(e) => {
+                  getNextData(
+                    "appStreamRoutes",
+                    ["vcpu", "memoryGib"],
+                    {
+                      instanceFamily: instanceFamilyValue,
+                      instanceType: e.target.value,
+                    },
+                    setSizeOptions
+                  );
+                  setinstanceTypeValue(e.target.value);
+                }}
+              >
+                <option>Select Instance</option>
+                {instanceTypeOptions.map((op, key) => {
+                  return <option key={key}>{op}</option>;
+                })}
+              </select>
+            </div>
           </div>
-        </div>
-        <div className="form-group row">
-          <div className="col-md-3 text">
-            <label className="subHeading" for="bundle">
-              Instance
-            </label>
-          </div>
-          <div className="col-md-9 options">
-            <select
-              className="form-control"
-              id="bundle"
-              name="bundle"
-              onChange={(e) => {
-                getNextData(
-                  "appStreamRoutes",
-                  ["vcpu", "memoryGib"],
-                  {
-                    instanceFamily: instanceFamilyValue,
-                    instanceType: e.target.value,
-                  },
-                  setSizeOptions
-                );
-                setinstanceTypeValue(e.target.value);
-              }}
-            >
-              <option>Select Instance</option>
-              {instanceTypeOptions.map((op, key) => {
-                return <option key={key}>{op}</option>;
-              })}
-            </select>
-          </div>
-        </div>
-        <div className="form-group row">
-          <div className="col-md-3 text">
-            <label className="subHeading" for="configuration">
-              Size
-            </label>
-          </div>
-          <div className="col-md-9 options">
-            <select
-              className="form-control"
-              id="configuration"
-              name="configuration"
-              onChange={(e) => {
-                getPrice(
-                  "appStreamRoutes",
-                  {
-                    instanceFamily: instanceFamilyValue,
-                    instanceType: instanceTypeValue,
-                  },
-                  e.target.value
-                );
-              }}
-            >
-              <option>Select Size</option>
-              {sizeOPtions.map((op, key) => {
-                return <option key={key}>{op}</option>;
-              })}
-            </select>
+          <div className="form-group row">
+            <div className="col-md-3 text">
+              <label className="subHeading" for="configuration">
+                Size
+              </label>
+            </div>
+            <div className="col-md-9 options">
+              <select
+                className="form-control"
+                id="configuration"
+                name="configuration"
+                onChange={(e) => {
+                  getPrice(
+                    "appStreamRoutes",
+                    {
+                      instanceFamily: instanceFamilyValue,
+                      instanceType: instanceTypeValue,
+                    },
+                    e.target.value
+                  );
+                }}
+              >
+                <option>Select Size</option>
+                {sizeOPtions.map((op, key) => {
+                  return <option key={key}>{op}</option>;
+                })}
+              </select>
+            </div>
           </div>
         </div>
       </div>

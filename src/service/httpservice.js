@@ -18,6 +18,25 @@ export const API = {
       console.error("Error fetching options:", error);
     }
   },
+  getWorkSpaceOptions: async (resource, options, timeStamp) => {
+    try {
+      const res = await fetch(
+        `http://localhost:4000/${resource}/getUniqueValue`,
+        {
+          method: "POST",
+          body: JSON.stringify({ attribute: options, timeStamp: timeStamp }),
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      const data = res.json();
+      console.log(data);
+      return data;
+    } catch (error) {
+      console.error("Error fetching options:", error);
+    }
+  },
   getNextOptions: async (resource, options, values) => {
     try {
       const body = {
@@ -53,6 +72,7 @@ export const API = {
       });
 
       const data = await res.json();
+      console.log(data);
       return data;
     } catch (error) {
       console.error("Error fetching options:", error);
@@ -73,5 +93,8 @@ export const API = {
       }
     }
     return undefined;
+  },
+  getProfile: async () => {
+    window.location.href = "http://localhost:4000/auth/google";
   },
 };
