@@ -1,6 +1,6 @@
 import "./App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { Table } from "./components/table";
 import { Login } from "./components/login";
 import { useState } from "react";
@@ -11,6 +11,7 @@ function App() {
       <div className="container main">
         <BrowserRouter>
           <Routes>
+            <Route exact path="/" element={<Navigate to="/login" />}></Route>
             <Route
               path="/login"
               element={<Login userInfo={userInfo} setUserInfo={setUserInfo} />}
