@@ -18,13 +18,16 @@ export const API = {
       console.error("Error fetching options:", error);
     }
   },
-  getWorkSpaceOptions: async (resource, options, timeStamp) => {
+  getWorkSpaceOptions: async (resource, options, runningMode) => {
     try {
       const res = await fetch(
         `http://localhost:4000/${resource}/getUniqueValue`,
         {
           method: "POST",
-          body: JSON.stringify({ attribute: options, timeStamp: timeStamp }),
+          body: JSON.stringify({
+            attribute: options,
+            runningMode: runningMode,
+          }),
           headers: {
             "Content-Type": "application/json",
           },

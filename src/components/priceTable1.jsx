@@ -17,11 +17,7 @@ export const FormDesign2 = ({
   const [configurationOPtions, setconfigurationOptions] = useState([]);
 
   async function getData(resource, options) {
-    const res = await API.getWorkSpaceOptions(
-      resource,
-      options,
-      "Billed by the month"
-    );
+    const res = await API.getWorkSpaceOptions(resource, options, "AlwaysOn");
     setOperatingSystemOptions(res);
   }
 
@@ -69,17 +65,28 @@ export const FormDesign2 = ({
                     "workSpaceRoutes",
                     "license",
                     {
-                      operatingSystem: e.target.value,
-                      groupDescription: "Billed by the month",
+                      operatingSystem:
+                        e.target.value == "Workspaces Core"
+                          ? "Any"
+                          : e.target.value,
+                      runningMode: "AlwaysOn",
                     },
                     setLicenseOptions
                   );
-                  setOperatingSystemValueT2(e.target.value);
+                  setOperatingSystemValueT2(
+                    e.target.value == "Workspaces Core" ? "Any" : e.target.value
+                  );
                 }}
               >
                 <option>Select Operating System</option>
                 {operatingSystemOptions.map((op, key) => {
-                  return <option key={key}>{op}</option>;
+                  if (op !== null && op !== "Windows Server 2019") {
+                    if (op === "Any") {
+                      return <option key={key}>Workspaces Core</option>;
+                    }
+                    return <option key={key}>{op}</option>;
+                  }
+                  return null;
                 })}
               </select>
             </div>
@@ -102,7 +109,7 @@ export const FormDesign2 = ({
                     {
                       license: e.target.value,
                       operatingSystem: operatingSystemValueT2,
-                      groupDescription: "Billed by the month",
+                      runningMode: "AlwaysOn",
                     },
                     setBundleOptions
                   );
@@ -111,7 +118,10 @@ export const FormDesign2 = ({
               >
                 <option>Select Operating System</option>
                 {licenseOPtions.map((op, key) => {
-                  return <option key={key}>{op}</option>;
+                  if (op !== null) {
+                    return <option key={key}>{op}</option>;
+                  }
+                  return null;
                 })}
               </select>
             </div>
@@ -134,7 +144,8 @@ export const FormDesign2 = ({
                     {
                       bundleGroup: e.target.value,
                       license: licenseValue,
-                      groupDescription: "Billed by the month",
+                      runningMode: "AlwaysOn",
+
                       operatingSystem: operatingSystemValueT2,
                     },
                     setconfigurationOptions
@@ -144,7 +155,10 @@ export const FormDesign2 = ({
               >
                 <option>Select Package</option>
                 {bundleOPtions.map((op, key) => {
-                  return <option key={key}>{op}</option>;
+                  if (op !== null) {
+                    return <option key={key}>{op}</option>;
+                  }
+                  return null;
                 })}
               </select>
             </div>
@@ -167,7 +181,7 @@ export const FormDesign2 = ({
                       license: licenseValue,
                       bundleGroup: bundleValue,
                       operatingSystem: operatingSystemValueT2,
-                      groupDescription: "Billed by the month",
+                      runningMode: "AlwaysOn",
                     },
                     e.target.value
                   );
@@ -176,7 +190,10 @@ export const FormDesign2 = ({
               >
                 <option>Select Configuration</option>
                 {configurationOPtions.map((op, key) => {
-                  return <option key={key}>{op}</option>;
+                  if (op !== null) {
+                    return <option key={key}>{op}</option>;
+                  }
+                  return null;
                 })}
               </select>
             </div>
