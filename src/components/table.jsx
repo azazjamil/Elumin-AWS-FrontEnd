@@ -26,6 +26,8 @@ export const Table = ({ setUserInfo, userInfo }) => {
   const [virtualMonthlyPrice, setVirtualMonthlyPrice] = useState();
   const [virtualApplicationPrice, setVirtualApplicationPrice] = useState();
   const [labInstancePrice, setlabInstancePrice] = useState();
+  const [monthlycost1, setmonthlycost1] = useState();
+
   const logOut = () => {
     googleLogout();
     setUserInfo(null);
@@ -34,8 +36,10 @@ export const Table = ({ setUserInfo, userInfo }) => {
   const navigate = useNavigate();
   useEffect(() => {
     const fetchProfileInfo = async () => {
-      const userInfo = JSON.parse(window.localStorage.getItem("userInfo"));
-      if (userInfo) {
+      const userInfo = window.localStorage.getItem("userInfo");
+      // userInfo = JSON.parse(userInfo);
+      if (userInfo && userInfo !== "undefined") {
+        debugger;
         try {
           const response = await axios.get(
             `https://www.googleapis.com/oauth2/v1/userinfo?access_token=${userInfo.access_token}`,
@@ -65,6 +69,8 @@ export const Table = ({ setUserInfo, userInfo }) => {
         setVirtualHourlyPrice={setVirtualHourlyPrice}
         operatingSystemValueT1={operatingSystemValueT1}
         setOperatingSystemValueT1={setOperatingSystemValueT1}
+        monthlycost1={monthlycost1}
+        setmonthlycost1={setmonthlycost1}
       />
       <FormDesign2
         licenseValue={licenseValue1}
@@ -90,6 +96,8 @@ export const Table = ({ setUserInfo, userInfo }) => {
         setlabInstancePrice={setlabInstancePrice}
       />
       <SecondTable
+        monthlycost1={monthlycost1}
+        setmonthlycost1={setmonthlycost1}
         configurationValue={configurationValue}
         configurationValue1={configurationValue1}
         instanceTypeValue={instanceTypeValue}

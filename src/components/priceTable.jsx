@@ -10,6 +10,7 @@ export const FormDesign1 = ({
   setVirtualHourlyPrice,
   operatingSystemValueT1,
   setOperatingSystemValueT1,
+  setmonthlycost1,
 }) => {
   const [licenseOPtions, setLicenseOptions] = useState([]);
   const [operatingSystemOptions, setOperatingSystemOptions] = useState([]);
@@ -17,11 +18,7 @@ export const FormDesign1 = ({
   const [configurationOPtions, setconfigurationOptions] = useState([]);
 
   async function getData(resource, options) {
-    const res = await API.getWorkSpaceOptions(
-      resource,
-      options,
-      "Billed by the hour"
-    );
+    const res = await API.getWorkSpaceOptions(resource, options, "AutoStop");
     setOperatingSystemOptions(res);
   }
 
@@ -38,11 +35,19 @@ export const FormDesign1 = ({
     }, {});
     const mergedObject = { ...value, ...keyValuePairs };
     const res = await API.getSku(resource, mergedObject);
-    let price = await API.getPrice(res);
-    price = parseFloat(price);
-    console.log(price);
-    price = parseFloat(price.toFixed(3));
-    setVirtualHourlyPrice(price);
+    // let price = await API.getPrice(res);
+    // price = parseFloat(price);
+    // console.log(price);
+    // price = parseFloat(price.toFixed(3));
+    console.log(res);
+    if (res.price >= res.price1) {
+      setmonthlycost1(res.price);
+      setVirtualHourlyPrice(res.price1);
+    }
+    if (res.price <= res.price1) {
+      setmonthlycost1(res.price1);
+      setVirtualHourlyPrice(res.price);
+    }
   }
 
   useEffect(() => {
@@ -68,17 +73,28 @@ export const FormDesign1 = ({
                     "workSpaceRoutes",
                     "license",
                     {
-                      operatingSystem: e.target.value,
-                      groupDescription: "Billed by the hour",
+                      operatingSystem:
+                        e.target.value == "Workspaces Core"
+                          ? "Any"
+                          : e.target.value,
+                      group: "Usage",
                     },
                     setLicenseOptions
                   );
-                  setOperatingSystemValueT1(e.target.value);
+                  setOperatingSystemValueT1(
+                    e.target.value == "Workspaces Core" ? "Any" : e.target.value
+                  );
                 }}
               >
                 <option>Select Operating System</option>
                 {operatingSystemOptions.map((op, key) => {
-                  return <option key={key}>{op}</option>;
+                  if (op !== null && op !== "Windows Server 2019") {
+                    if (op === "Any") {
+                      return <option key={key}>Workspaces Core</option>;
+                    }
+                    return <option key={key}>{op}</option>;
+                  }
+                  return null;
                 })}
               </select>
             </div>
@@ -99,7 +115,6 @@ export const FormDesign1 = ({
                     {
                       license: e.target.value,
                       operatingSystem: operatingSystemValueT1,
-                      groupDescription: "Billed by the hour",
                     },
                     setBundleOptions
                   );
@@ -108,7 +123,10 @@ export const FormDesign1 = ({
               >
                 <option>Select License Type</option>
                 {licenseOPtions.map((op, key) => {
-                  return <option key={key}>{op}</option>;
+                  if (op !== null) {
+                    return <option key={key}>{op}</option>;
+                  }
+                  return null;
                 })}
               </select>
             </div>
@@ -129,8 +147,9 @@ export const FormDesign1 = ({
                     {
                       bundleGroup: e.target.value,
                       license: licenseValue,
-                      groupDescription: "Billed by the hour",
+                      runningMode: "AutoStop",
                       operatingSystem: operatingSystemValueT1,
+                      group: "Usage",
                     },
                     setconfigurationOptions
                   );
@@ -139,7 +158,10 @@ export const FormDesign1 = ({
               >
                 <option>Select Package</option>
                 {bundleOPtions.map((op, key) => {
-                  return <option key={key}>{op}</option>;
+                  if (op !== null) {
+                    return <option key={key}>{op}</option>;
+                  }
+                  return null;
                 })}
               </select>
             </div>
@@ -160,7 +182,8 @@ export const FormDesign1 = ({
                       license: licenseValue,
                       bundleGroup: bundleValue,
                       operatingSystem: operatingSystemValueT1,
-                      groupDescription: "Billed by the hour",
+                      group: "Usage",
+                      runningMode: "AutoStop",
                     },
                     e.target.value
                   );
@@ -169,7 +192,10 @@ export const FormDesign1 = ({
               >
                 <option>Select Configuration</option>
                 {configurationOPtions.map((op, key) => {
-                  return <option key={key}>{op}</option>;
+                  if (op !== null) {
+                    return <option key={key}>{op}</option>;
+                  }
+                  return null;
                 })}
               </select>
             </div>

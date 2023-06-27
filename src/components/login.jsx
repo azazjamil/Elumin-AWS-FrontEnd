@@ -14,7 +14,6 @@ export const Login = ({ userInfo, setUserInfo }) => {
 
   const login = useGoogleLogin({
     onSuccess: (response) => {
-      debugger;
       setUserInfo(response.access_token);
     },
     onError: (error) => {

@@ -69,7 +69,10 @@ export const FormDesign3 = ({
               >
                 <option>Select Type</option>
                 {instanceFamilyOptions.map((op, key) => {
-                  return <option key={key}>{op}</option>;
+                  if (op !== null) {
+                    return <option key={key}>{op}</option>;
+                  }
+                  return;
                 })}
               </select>
             </div>
@@ -100,7 +103,10 @@ export const FormDesign3 = ({
               >
                 <option>Select Instance</option>
                 {instanceTypeOptions.map((op, key) => {
-                  return <option key={key}>{op}</option>;
+                  if (op !== null) {
+                    return <option key={key}>{op}</option>;
+                  }
+                  return null;
                 })}
               </select>
             </div>
@@ -129,7 +135,10 @@ export const FormDesign3 = ({
               >
                 <option>Select Size</option>
                 {sizeOPtions.map((op, key) => {
-                  return <option key={key}>{op}</option>;
+                  if (op !== null) {
+                    return <option key={key}>{op}</option>;
+                  }
+                  return null;
                 })}
               </select>
             </div>

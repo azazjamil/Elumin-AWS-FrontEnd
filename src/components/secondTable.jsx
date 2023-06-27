@@ -14,6 +14,7 @@ export const SecondTable = ({
   virtualMonthlyPrice,
   virtualApplicationPrice,
   labInstancePrice,
+  monthlycost1,
 }) => {
   const headArray = [
     "",
@@ -40,17 +41,40 @@ export const SecondTable = ({
   const [price4, setprice4] = useState();
   const [price5, setprice5] = useState();
   const [price6, setprice6] = useState();
-  const [hourlycost1, sethourlycost1] = useState(virtualHourlyPrice / 720);
   const [hourlycost4, sethourlycost4] = useState(labInstancePrice / 720);
 
-  let totalPrice =
-    Number(price1) + Number(price2) + Number(price3) + Number(price4);
+  let totalPrice = 0;
 
+  if (!isNaN(price1)) {
+    totalPrice += Number(price1);
+  }
+
+  if (!isNaN(price2)) {
+    totalPrice += Number(price2);
+  }
+
+  if (!isNaN(price3)) {
+    totalPrice += Number(price3);
+  }
+
+  if (!isNaN(price4)) {
+    totalPrice += Number(price4);
+  }
+
+  if (!isNaN(price5)) {
+    totalPrice += Number(price5);
+  }
+
+  if (!isNaN(price6)) {
+    totalPrice += Number(price6);
+  }
   const tableValue = [
     { Description: "AWS Estimated Usage Fees-Monthly", prices: "" },
     {
       Description: "WorkSpaces",
-      prices: isNaN(price2) ? 0 : `$${price2}`,
+      prices: isNaN(price2)
+        ? "0"
+        : `$${price2} ` + (isNaN(Number(price1)) ? "0" : `+ $${price1} `),
     },
     {
       Description: "AppStream 2.0",
@@ -65,12 +89,12 @@ export const SecondTable = ({
       prices: isNaN(price6) ? 0 : `$${price6}`,
     },
     {
-      Description: "Supporting Infrastructure (VPN, etc)",
+      Description: "No. of Labs",
       prices: isNaN(price5) ? 0 : `$${price5}`,
     },
     {
       Description: "Total",
-      prices: `$${Math.round(totalPrice * 1000) / 1000}`,
+      prices: `$${totalPrice.toFixed(2)}`,
     },
   ];
   function downloadPdf(button) {
@@ -79,7 +103,6 @@ export const SecondTable = ({
     const orientation = "portrait"; // portrait or landscape
     const title =
       "                  All fees are estimated based on user population and estimate monthly usage.\n                  All fees on this chart are paid directly to Amazon Web Services. ";
-    const marginLeft = 40;
     const doc = new jsPDF(orientation, unit, size);
 
     doc.setFontSize(15);
@@ -94,7 +117,7 @@ export const SecondTable = ({
     };
 
     const logoWidth = 150; // Adjust the width of the logo as needed
-    const logoHeight = 70; // Adjust the height of the logo as needed
+    const logoHeight = 50; // Adjust the height of the logo as needed
 
     doc.addImage(logoImg, "PNG", 320, 10, logoWidth, logoHeight);
     doc.autoTable(content);
@@ -147,9 +170,7 @@ export const SecondTable = ({
       doc.save("report.pdf");
     }
   }
-  // function leave() {
-  //   API.logOut();
-  // }
+
   const [isOpen, setIsOpen] = useState(false);
   const [email, setEmail] = useState("");
 
@@ -170,6 +191,20 @@ export const SecondTable = ({
     closeModal();
     downloadPdf("send email");
   };
+  function onPriceChange(setOption, value) {
+    // setOption(event)
+    if (setOption == "input1") {
+      setFirstInput1(value);
+      const cal = value * Number(monthlycost1);
+      const cal2 = value * firstINput2 * Number(virtualHourlyPrice);
+      setprice1(cal + cal2);
+    } else {
+      setFirstInput2(value);
+      const cal = firstINput1 * Number(monthlycost1);
+      const cal2 = firstINput1 * value * Number(virtualHourlyPrice);
+      setprice1(cal + cal2);
+    }
+  }
 
   return (
     <div className="col-md-12">
@@ -191,35 +226,33 @@ export const SecondTable = ({
                 <td>{configurationValue}</td>
                 <td>
                   <input
+                    min={0}
                     type="number"
                     className="form-control"
                     onChange={(e) => {
-                      const cal = firstINput1 * hourlycost1;
-                      const cal2 =
-                        firstINput1 * secondINput1 * virtualHourlyPrice;
-
-                      setFirstInput1(parseFloat(e.target.value));
-                      setprice1(cal + cal2);
+                      // setFirstInput1(e.target.value);
+                      onPriceChange("input1", e.target.value);
                     }}
                   />
                 </td>
-                <td>{virtualHourlyPrice ? `$${virtualHourlyPrice}` : ""}</td>
+                <td>
+                  {monthlycost1 ? `$${Number(monthlycost1).toFixed(2)}` : ""}
+                </td>
                 <td>
                   <input
+                    min={0}
                     type="number"
                     className="form-control"
                     onChange={(e) => {
-                      setFirstInput2(parseFloat(e.target.value));
-                      setprice1(
-                        (hourlycost1 * firstINput1 + virtualHourlyPrice) *
-                          firstINput2
-                      );
-                      sethourlycost1(virtualHourlyPrice / 720);
+                      // setFirstInput2(e.target.value);
+                      onPriceChange("input2", e.target.value);
                     }}
                   />
                 </td>
                 <td>
-                  {isNaN(hourlycost1) ? "" : `$${hourlycost1.toFixed(2)}`}
+                  {virtualHourlyPrice
+                    ? `$${Number(virtualHourlyPrice).toFixed(2)}`
+                    : ""}
                 </td>
 
                 <td>{isNaN(price1) ? "" : `$${price1.toFixed(2)}`}</td>
@@ -229,16 +262,23 @@ export const SecondTable = ({
                 <td>{configurationValue1}</td>
                 <td>
                   <input
+                    min={0}
                     type="number"
                     className="form-control"
                     onChange={(e) => {
                       const value = e.target.value;
                       setsecondInput1(value);
-                      setprice2((virtualMonthlyPrice * value).toFixed(2));
+                      setprice2(
+                        (Number(virtualMonthlyPrice) * value).toFixed(2)
+                      );
                     }}
                   />
                 </td>
-                <td>{virtualMonthlyPrice ? `$${virtualMonthlyPrice}` : ""}</td>
+                <td>
+                  {virtualMonthlyPrice
+                    ? `$${Number(virtualMonthlyPrice).toFixed(2)}`
+                    : ""}
+                </td>
                 <td></td>
                 <td></td>
                 <td>{isNaN(price2) ? "" : `$${price2}`}</td>
@@ -248,16 +288,17 @@ export const SecondTable = ({
                 <td>{instanceTypeValue}</td>
                 <td>
                   <input
+                    min={0}
                     type="number"
                     className="form-control"
                     onChange={(e) => {
                       const input1Value = parseFloat(e.target.value);
-
                       setthirdInput1(input1Value);
-                      const intermediateResult1 =
-                        virtualApplicationPrice * input1Value;
-                      const intermediateResult2 = intermediateResult1 + 0.44;
-                      const finalResult = intermediateResult2 * thirdINput1;
+                      const intermediateResult1 = input1Value * 0.44;
+                      const intermediateResult2 =
+                        thirdINput2 * virtualApplicationPrice;
+                      const finalResult =
+                        intermediateResult2 * intermediateResult1;
 
                       setprice3(finalResult.toFixed(2));
                     }}
@@ -266,15 +307,17 @@ export const SecondTable = ({
                 <td>$0.44</td>
                 <td>
                   <input
+                    min={0}
                     type="number"
                     className="form-control"
                     onChange={(e) => {
                       const input2Value = parseFloat(e.target.value);
                       setthirdInput2(input2Value);
-                      const intermediateResult1 =
-                        virtualApplicationPrice * input2Value;
-                      const intermediateResult2 = intermediateResult1 + 0.44;
-                      const finalResult = intermediateResult2 * thirdINput1;
+                      const intermediateResult1 = thirdINput1 * 0.44;
+                      const intermediateResult2 =
+                        thirdINput2 * virtualApplicationPrice;
+                      const finalResult =
+                        intermediateResult2 * intermediateResult1;
 
                       setprice3(finalResult.toFixed(2));
                     }}
@@ -296,6 +339,7 @@ export const SecondTable = ({
                 <td>{instanceLabType}</td>
                 <td>
                   <input
+                    min={0}
                     type="number"
                     className="form-control"
                     onChange={(e) => {
@@ -309,6 +353,7 @@ export const SecondTable = ({
                 <td>{labInstancePrice ? `$${labInstancePrice}` : ""}</td>
                 <td>
                   <input
+                    min={0}
                     type="number"
                     className="form-control"
                     onChange={(e) => {
@@ -327,6 +372,7 @@ export const SecondTable = ({
                 <td></td>
                 <td>
                   <input
+                    min={0}
                     type="number"
                     className="form-control"
                     onChange={(e) => {
@@ -334,33 +380,34 @@ export const SecondTable = ({
                       setfiveInput1(value);
                       console.log(value);
                       const total = value * 86.4;
-                      setprice5(total);
+                      setprice5(total.toFixed(2));
                     }}
                   />
                 </td>
                 <td>$86.40</td>
                 <td></td>
                 <td></td>
-                <td>{isNaN(price5) ? "" : `$${price5.toFixed(2)}`}</td>
+                <td>{isNaN(price5) ? "" : `$${price5}`}</td>
               </tr>
               <tr>
                 <th>Additional Storage</th>
                 <td>Number of GBs per month</td>
                 <td>
                   <input
+                    min={0}
                     type="number"
                     className="form-control"
                     onChange={(e) => {
                       const value = parseFloat(e.target.value);
                       setsixInput1(value);
-                      setprice6(value * 0.1);
+                      setprice6((value * 0.1).toFixed(2));
                     }}
                   />
                 </td>
                 <td>$0.10</td>
                 <td></td>
                 <td></td>
-                <td>{isNaN(price6) ? "" : `$${price6.toFixed(2)}`}</td>
+                <td>{isNaN(price6) ? "" : `$${price6}`}</td>
               </tr>
             </tbody>
           </table>

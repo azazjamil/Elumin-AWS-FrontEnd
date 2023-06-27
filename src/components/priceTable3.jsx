@@ -61,7 +61,10 @@ export const FormDesign4 = ({
               >
                 <option>Select Type</option>
                 {operatingSystemOptions.map((op, key) => {
-                  return <option key={key}>{op}</option>;
+                  if (op !== null) {
+                    return <option key={key}>{op}</option>;
+                  }
+                  return null;
                 })}
               </select>
             </div>
@@ -87,7 +90,10 @@ export const FormDesign4 = ({
               >
                 <option>Select Instance</option>
                 {instanceTypeOptions.map((op, key) => {
-                  return <option key={key}>{op}</option>;
+                  if (op !== null) {
+                    return <option key={key}>{op}</option>;
+                  }
+                  return null;
                 })}
               </select>
             </div>
